@@ -1,0 +1,8 @@
+node_modules/
+src/
+dev/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+tsconfig.json
+.vscode/
