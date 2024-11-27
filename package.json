@@ -9,7 +9,7 @@
     "./*": "./dist/*.js"
   },
   "scripts": {
-    "build": "tsc && rollup -c"
+    "build": "rollup -c"
   },
   "author": {
     "name": "lingbopro",

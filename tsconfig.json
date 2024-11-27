@@ -3,6 +3,10 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ESNext", "DOM"],
+    "paths": {
+      "#core/*": ["./src/core/*"],
+      "#components/*": ["./src/components/*"]
+    },
     "strict": true,
     "allowJs": true,
     "checkJs": true,
