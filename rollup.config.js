@@ -3,6 +3,7 @@ import child_process from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'rollup';
 import { babel } from '@rollup/plugin-babel';
+import html from 'rollup-plugin-html';
 import { string } from 'rollup-plugin-string';
 import terser from '@rollup/plugin-terser';
 
@@ -32,6 +33,14 @@ export default defineConfig({
     runTypescriptCompiler(),
     string({
       include: '**/*.css',
+    }),
+    html({
+      include: '**/*.html',
+      htmlMinifierOptions: {
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        removeComments: true,
+      },
     }),
     babel({
       babelHelpers: 'bundled',
