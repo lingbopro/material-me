@@ -76,7 +76,16 @@ export function parseType(value: unknown, old: PropType) {
  * @param config 组件配置
  * @returns 应继承的自定义元素类
  */
-export function useElement<ComponentClass extends HTMLElement>(config: ComponentConfig): new () => ComponentClass {
+export function useElement<ComponentClass extends HTMLElement>(
+  config: ComponentConfig
+): {
+  new (): ComponentClass;
+  /**
+   * 注册自定义元素
+   * @param name 元素名
+   */
+  readonly define: (name: string) => void;
+} {
   return class extends HTMLElement {
     constructor() {
       super();
@@ -178,5 +187,5 @@ export function useElement<ComponentClass extends HTMLElement>(config: Component
     static define(name: string) {
       window.customElements.define(name, this);
     }
-  } as unknown as new () => ComponentClass;
+  } as unknown as { new (): ComponentClass; readonly define: (name: string) => void };
 }
