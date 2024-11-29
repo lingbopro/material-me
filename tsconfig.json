@@ -10,7 +10,7 @@
     "strict": true,
     "allowJs": true,
     "checkJs": true,
-    "outDir": "./dist",
+    "outDir": "./.__compile_cache__",
     "rootDir": "./src",
     "noImplicitAny": false,
     "declaration": true,

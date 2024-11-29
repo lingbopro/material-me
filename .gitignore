@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.__compile_cache__/
 package-lock.json
 yarn.lock
 !pnpm-lock.yaml
