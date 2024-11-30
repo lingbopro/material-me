@@ -10,7 +10,7 @@ interface ComponentConfig {
   /** HTML模板字符串 */
   template: string;
   /** CSS 样式字符串 */
-  style: string;
+  style: string | string[];
   /** 属性列表 */
   props: { [name: string]: string };
   /** 属性监听列表 */
@@ -91,7 +91,13 @@ export function useElement<ComponentClass extends HTMLElement>(
       super();
       const shadowRoot = this.attachShadow({ mode: 'open' });
       shadowRoot.innerHTML = config.template;
-      attachStylesheet(shadowRoot, config.style);
+      if (Array.isArray(config.style)) {
+        for (const style of config.style) {
+          attachStylesheet(shadowRoot, style);
+        }
+      } else {
+        attachStylesheet(shadowRoot, config.style);
+      }
       this.props = { ...config.props };
       this.setupOptions = config.setup?.call(this, shadowRoot) ?? {};
       this.exposeProperties();
