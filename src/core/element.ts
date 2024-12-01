@@ -6,7 +6,7 @@ type PropType = string | number | boolean | undefined;
 /**
  * 组件行为
  */
-interface ComponentConfig {
+interface ComponentConfig<ComponentClass extends HTMLElement> {
   /** HTML模板字符串 */
   template: string;
   /** CSS 样式字符串 */
@@ -16,7 +16,7 @@ interface ComponentConfig {
   /** 属性监听列表 */
   syncProps?: string[];
   /** 初始化函数 */
-  setup?: (shadowRoot: ShadowRoot) => SetupOptions;
+  setup?: (this: ComponentClass, shadowRoot: ShadowRoot) => SetupOptions;
 }
 
 /**
@@ -77,7 +77,7 @@ export function parseType(value: unknown, old: PropType) {
  * @returns 应继承的自定义元素类
  */
 export function useElement<ComponentClass extends HTMLElement>(
-  config: ComponentConfig
+  config: ComponentConfig<ComponentClass>
 ): {
   new (): ComponentClass;
   /**
@@ -99,7 +99,7 @@ export function useElement<ComponentClass extends HTMLElement>(
         attachStylesheet(shadowRoot, config.style);
       }
       this.props = { ...config.props };
-      this.setupOptions = config.setup?.call(this, shadowRoot) ?? {};
+      this.setupOptions = config.setup?.call(this as unknown as ComponentClass, shadowRoot) ?? {};
       this.exposeProperties();
       for (const name in this.props) {
         this.props[name] = this.getAttribute(name) ?? config.props[name];
