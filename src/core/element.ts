@@ -86,7 +86,76 @@ export function useElement<ComponentClass extends HTMLElement>(
    */
   readonly define: (name: string) => void;
 } {
-  return class extends HTMLElement {
+  let setupOptions: SetupOptions;
+  let props: { [key: string]: PropType };
+
+  /**
+   * 为此组件增加一个属性
+   * @param name 属性名
+   */
+  const createProperty = (component: MaterialMeGeneratedComponent, name: string) => {
+    Object.defineProperty(component, name, {
+      get: () => {
+        return props[name];
+      },
+      set: (value) => {
+        const oldValue = props[name];
+        const parsedValue = parseType(value, oldValue);
+        if (parsedValue !== props[name]) {
+          setupOptions.onAttributeChanged?.call(component, name, oldValue, parsedValue);
+          props[name] = parsedValue;
+          syncProperty(component, name);
+          setupOptions.propsSetter?.[name]?.call(component, parsedValue);
+        }
+      },
+      configurable: true,
+    });
+  };
+
+  /**
+   * 处理一个属性的更改同步
+   * @param name 属性名
+   */
+  const syncProperty = (component: MaterialMeGeneratedComponent, name: string) => {
+    if (config.syncProps?.includes(name)) {
+      const lowerKey = name.toLowerCase();
+      const attrValue = component.getAttribute(lowerKey);
+      const valueStr = String(props[name]);
+
+      if (props[name] === config.props[name] && attrValue !== null) {
+        component.removeAttribute(lowerKey);
+      } else if (props[name] !== config.props[name] && attrValue !== valueStr) {
+        component.setAttribute(lowerKey, valueStr);
+      }
+    }
+  };
+
+  /**
+   * 暴露属性
+   */
+  const exposeProperties = (component: MaterialMeGeneratedComponent) => {
+    const exposeDescriptors = Object.getOwnPropertyDescriptors(setupOptions.expose ?? {});
+    for (const key in exposeDescriptors) {
+      const item = exposeDescriptors[key];
+      const existing = Object.getOwnPropertyDescriptor(component, key);
+      if (existing) {
+        if (item.value) {
+          existing.value = item.value;
+        }
+        if (item.get) {
+          existing.get = item.get;
+        }
+        if (item.set) {
+          existing.set = item.set;
+        }
+        Object.defineProperty(component, key, existing);
+      } else {
+        Object.defineProperty(component, key, item);
+      }
+    }
+  };
+
+  class MaterialMeGeneratedComponent extends HTMLElement {
     constructor() {
       super();
       const shadowRoot = this.attachShadow({ mode: 'open' });
@@ -98,93 +167,24 @@ export function useElement<ComponentClass extends HTMLElement>(
       } else {
         attachStylesheet(shadowRoot, config.style);
       }
-      this.props = { ...config.props };
-      this.setupOptions = config.setup?.call(this as unknown as ComponentClass, shadowRoot) ?? {};
-      this.exposeProperties();
-      for (const name in this.props) {
-        this.props[name] = this.getAttribute(name) ?? config.props[name];
-        this.createProperty(name);
+      props = { ...config.props };
+      setupOptions = config.setup?.call(this as unknown as ComponentClass, shadowRoot) ?? {};
+      exposeProperties(this);
+      for (const name in props) {
+        props[name] = this.getAttribute(name) ?? config.props[name];
+        createProperty(this, name);
       }
     }
 
     static observedAttributes: string[] = [];
-    private setupOptions: SetupOptions;
-    private props: { [key: string]: PropType };
-
-    /**
-     * 为此组件增加一个属性
-     * @param name 属性名
-     */
-    private createProperty(name: string) {
-      Object.defineProperty(this, name, {
-        get: () => {
-          return this.props[name];
-        },
-        set: (value) => {
-          const oldValue = this.props[name];
-          const parsedValue = parseType(value, oldValue);
-          if (parsedValue !== this.props[name]) {
-            this.setupOptions.onAttributeChanged?.call(this, name, oldValue, parsedValue);
-            this.props[name] = parsedValue;
-            this.syncProperty(name);
-            this.setupOptions.propsSetter?.[name]?.call(this, parsedValue);
-          }
-        },
-        configurable: true,
-      });
-    }
-
-    /**
-     * 处理一个属性的更改同步
-     * @param name 属性名
-     */
-    private syncProperty(name: string) {
-      if (config.syncProps?.includes(name)) {
-        const lowerKey = name.toLowerCase();
-        const attrValue = this.getAttribute(lowerKey);
-        const valueStr = String(this.props[name]);
-
-        if (this.props[name] === config.props[name] && attrValue !== null) {
-          this.removeAttribute(lowerKey);
-        } else if (this.props[name] !== config.props[name] && attrValue !== valueStr) {
-          this.setAttribute(lowerKey, valueStr);
-        }
-      }
-    }
-
-    /**
-     * 暴露属性
-     */
-    private exposeProperties() {
-      const exposeDescriptors = Object.getOwnPropertyDescriptors(this.setupOptions.expose ?? {});
-      for (const key in exposeDescriptors) {
-        const item = exposeDescriptors[key];
-        const existing = Object.getOwnPropertyDescriptor(this, key);
-        if (existing) {
-          if (item.value) {
-            existing.value = item.value;
-          }
-          if (item.get) {
-            existing.get = item.get;
-          }
-          if (item.set) {
-            existing.set = item.set;
-          }
-          Object.defineProperty(this, key, existing);
-        } else {
-          Object.defineProperty(this, key, item);
-        }
-      }
-    }
-
     connectedCallback() {
-      this.setupOptions.onMount?.call(this);
+      setupOptions.onMount?.call(this);
     }
     disconnectedCallback() {
-      this.setupOptions.onUnmount?.call(this);
+      setupOptions.onUnmount?.call(this);
     }
     adoptedCallback() {
-      this.setupOptions.onAdopt?.call(this);
+      setupOptions.onAdopt?.call(this);
     }
 
     /**
@@ -193,5 +193,6 @@ export function useElement<ComponentClass extends HTMLElement>(
     static define(name: string) {
       window.customElements.define(name, this);
     }
-  } as unknown as { new (): ComponentClass; readonly define: (name: string) => void };
+  }
+  return MaterialMeGeneratedComponent as unknown as { new (): ComponentClass; readonly define: (name: string) => void };
 }
