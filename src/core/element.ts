@@ -169,10 +169,18 @@ export function useElement<ComponentClass extends HTMLElement>(
       }
       props = { ...config.props };
       setupOptions = config.setup?.call(this as unknown as ComponentClass, shadowRoot) ?? {};
+      const nonDefaultProps: string[] = [];
       exposeProperties(this);
       for (const name in props) {
-        props[name] = this.getAttribute(name) ?? config.props[name];
+        const oldProp = this.getAttribute(name);
+        props[name] = oldProp ?? config.props[name];
         createProperty(this, name);
+        if (props[name] !== config.props[name]) {
+          nonDefaultProps.push(name);
+        }
+      }
+      for (const name of nonDefaultProps) {
+        this[name] = props[name];
       }
     }
 
