@@ -1,0 +1,6 @@
+:host {
+  display: flow-root;
+  color: rgb(var(--mm-color-on-background));
+  background-color: rgb(var(--mm-color-background));
+  font-family: Roboto, system-ui;
+}
