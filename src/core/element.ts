@@ -178,6 +178,9 @@ export function useElement<ComponentClass extends HTMLElement>(
         if (props[name] !== config.props[name]) {
           nonDefaultProps.push(name);
         }
+        if (oldProp === config.props[name]) {
+          this.removeAttribute(name);
+        }
       }
       for (const name of nonDefaultProps) {
         this[name] = props[name];
