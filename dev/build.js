@@ -51,9 +51,8 @@ async function main() {
   log('copying files...');
   await fs.promises.cp(path.join(root, 'src'), path.join(root, '.__compile_cache__'), { recursive: true });
   log('compiling TypeScript...');
-  child_process.execSync('npx tsc', {
-    cwd: root,
-  });
+  // This may not seem like standard usage, but it can at least reduce the waiting time by 3s
+  child_process.spawnSync('node', [path.join(root, 'node_modules', 'typescript', 'lib', '_tsc.js')], { cwd: root });
   logSuccess('success compiled TypeScript');
   log('generating bundles...');
   const globedFiles = fs.globSync(path.resolve(root, '.__compile_cache__', '**', '*.js'));
