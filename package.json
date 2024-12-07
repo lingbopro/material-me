@@ -12,7 +12,8 @@
     "./utils/*": "./dist/utils/*.js"
   },
   "scripts": {
-    "build": "node dev/build.js"
+    "build": "node dev/build.js",
+    "prepare": "husky"
   },
   "author": {
     "name": "lingbopro",
@@ -30,8 +31,11 @@
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-terser": "^0.4.4",
+    "husky": "^9.1.7",
     "rollup": "^4.27.4",
     "rollup-plugin-string": "^3.0.0",
     "typescript": "^5.7.2"
