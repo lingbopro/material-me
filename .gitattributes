@@ -1,3 +1,5 @@
-dev/* linguist-vendored
+dev/ linguist-vendored
+.husky/ linguist-vendored
 babel.config.json linguist-vendored
+commitlint.config.js linguist-vendored
 exports.js linguist-vendored
