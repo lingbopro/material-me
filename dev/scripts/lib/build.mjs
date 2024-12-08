@@ -2,16 +2,16 @@ import child_process from 'child_process';
 import fs from 'fs';
 import { fileURLToPath } from 'node:url';
 import { rollup } from 'rollup';
-
 import { babel } from '@rollup/plugin-babel';
 import { string } from 'rollup-plugin-string';
 import terser from '@rollup/plugin-terser';
 import path from 'path';
+import { debug, log, logError, logSuccess } from './utils.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../../..');
 
 const basicOutputConfig = {
   name: 'material-me',
@@ -31,28 +31,13 @@ const minifiedBundlePlugins = [
   terser(),
 ];
 
-function log(message, ...optionalParams) {
-  console.log('\x1b[0;1;96m🛠 ' + message + '\x1b[0m', ...optionalParams);
-}
-function logSuccess(message, ...optionalParams) {
-  console.log('\x1b[0;1;92m✔ ' + message + '\x1b[0m', ...optionalParams);
-}
-function logError(message, ...optionalParams) {
-  console.log('\x1b[0;1;91m✖ ' + message + '\x1b[0m', ...optionalParams);
-}
-function debug(message, ...optionalParams) {
-  if (process.argv.includes('--debug')) {
-    console.debug(message, ...optionalParams);
-  }
-}
-
-async function main() {
+export async function main(options) {
   log('starting bundle...');
   log('copying files...');
   await fs.promises.cp(path.join(root, 'src'), path.join(root, '.__compile_cache__'), { recursive: true });
   log('compiling TypeScript...');
   // This may not seem like standard usage, but it can at least reduce the waiting time by 3s
-  child_process.spawnSync('node', [path.join(root, 'node_modules', 'typescript', 'lib', '_tsc.js')], { cwd: root });
+  child_process.spawnSync('node', [path.join(root, 'node_modules', 'typescript', 'lib', 'tsc.js')], { cwd: root });
   logSuccess('success compiled TypeScript');
   log('generating bundles...');
   const globedFiles = fs.globSync(path.resolve(root, '.__compile_cache__', '**', '*.js'));
@@ -86,20 +71,31 @@ async function main() {
   logSuccess('success generated minified bundle');
 }
 
-async function execute() {
+export async function execute(options) {
   const startTime = new Date();
   try {
-    await main();
+    await main(options);
   } catch (error) {
     logError('an uncaught exception was encountered');
     logError('details:');
     console.error(error);
-    if (fs.existsSync(path.join(root, '.__compile_cache__')) && !process.argv.includes('--no-finally-clean')) {
-      log('cleaning up temp dir...');
-      await fs.promises.rm(path.join(root, '.__compile_cache__'), { recursive: true });
-    }
   }
   logSuccess(`done in ${(new Date() - startTime) / 1000}s`);
 }
 
-execute();
+export async function cleanup(options) {
+  if (fs.existsSync(path.join(root, '.__compile_cache__')) && !options.includes('--no-finally-clean')) {
+    log('cleaning up temp dir...');
+    await fs.promises.rm(path.join(root, '.__compile_cache__'), { recursive: true });
+  }
+}
+
+export const docs = `
+Usage: build [options]
+
+Options:
+  --no-finally-clean  Do not clean up temp directory after build
+  --debug             Enable debug mode
+
+  Examples:
+  $ pnpm scripts build`;

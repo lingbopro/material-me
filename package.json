@@ -12,8 +12,9 @@
     "./utils/*": "./dist/utils/*.js"
   },
   "scripts": {
-    "build": "node dev/build.js",
-    "prepare": "husky"
+    "build": "node dev/scripts/script.mjs build",
+    "prepare": "husky",
+    "script": "node dev/scripts/script.mjs"
   },
   "author": {
     "name": "lingbopro",
