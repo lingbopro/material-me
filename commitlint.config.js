@@ -21,5 +21,7 @@ export default {
         'ripple',
       ],
     ],
+    'body-case': [0],
+    'subject-case': [0],
   },
 };
