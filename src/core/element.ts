@@ -12,7 +12,7 @@ interface ComponentConfig<ComponentClass extends HTMLElement> {
   /** CSS 样式字符串 */
   style: string | string[];
   /** 属性列表 */
-  props: { [name: string]: string };
+  props: { [name: string]: PropType };
   /** 属性监听列表 */
   syncProps?: string[];
   /** 初始化函数 */
