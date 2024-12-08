@@ -13,11 +13,6 @@ export class Ripple extends useElement({
     const containerEl = shadowRoot.querySelector('.container') as HTMLDivElement;
     const rippleTemplateEl = shadowRoot.querySelector('.ripple-template') as HTMLDivElement;
 
-    // 获取文字颜色
-    const computedTextColor = getComputedStyle(this).color;
-    const textColor = computedTextColor.replace(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/g, '$1, $2, $3');
-    containerEl.style.setProperty('--mm-internal-text-color', textColor);
-
     /** 波纹点击开始 */
     const rippleTouchStart = (event: MouseEvent, node?: HTMLElement) => {
       if (!node) {
