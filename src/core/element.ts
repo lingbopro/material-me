@@ -4,19 +4,24 @@
 type PropType = string | number | boolean | undefined;
 
 /**
+ * HTML 元素属性（类）
+ */
+type ElementProps = { [key: string]: PropType };
+
+/**
  * 组件行为
  */
-interface ComponentConfig<ComponentClass extends HTMLElement> {
+interface ComponentConfig<ComponentClass extends HTMLElement, Props extends ElementProps> {
   /** HTML模板字符串 */
   template: string;
   /** CSS 样式字符串 */
   style: string | string[];
   /** 属性列表 */
-  props: { [name: string]: PropType };
+  props: Props;
   /** 属性监听列表 */
   syncProps?: string[];
   /** 初始化函数 */
-  setup?: (this: ComponentClass, shadowRoot: ShadowRoot) => SetupOptions;
+  setup?: (this: ComponentClass & Props, shadowRoot: ShadowRoot) => SetupOptions;
 }
 
 /**
@@ -76,10 +81,10 @@ export function parseType(value: unknown, old: PropType) {
  * @param config 组件配置
  * @returns 应继承的自定义元素类
  */
-export function useElement<ComponentClass extends HTMLElement>(
-  config: ComponentConfig<ComponentClass>
+export function useElement<ComponentClass extends HTMLElement, Props extends ElementProps>(
+  config: ComponentConfig<ComponentClass, Props>
 ): {
-  new (): ComponentClass;
+  new (): ComponentClass & Props;
   /**
    * 注册自定义元素
    * @param name 元素名
@@ -87,7 +92,7 @@ export function useElement<ComponentClass extends HTMLElement>(
   readonly define: (name: string) => void;
 } {
   let setupOptions: SetupOptions;
-  let props: { [key: string]: PropType };
+  let props: ElementProps;
 
   /**
    * 为此组件增加一个属性
@@ -168,7 +173,7 @@ export function useElement<ComponentClass extends HTMLElement>(
         attachStylesheet(shadowRoot, config.style);
       }
       props = { ...config.props };
-      setupOptions = config.setup?.call(this as unknown as ComponentClass, shadowRoot) ?? {};
+      setupOptions = config.setup?.call(this as unknown as ComponentClass & Props, shadowRoot) ?? {};
       const nonDefaultProps: string[] = [];
       exposeProperties(this);
       for (const name in props) {
@@ -205,5 +210,5 @@ export function useElement<ComponentClass extends HTMLElement>(
       window.customElements.define(name, this);
     }
   }
-  return MaterialMeGeneratedComponent as unknown as { new (): ComponentClass; readonly define: (name: string) => void };
+  return MaterialMeGeneratedComponent as unknown as { new (): ComponentClass & Props; readonly define: (name: string) => void };
 }
