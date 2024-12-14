@@ -178,7 +178,11 @@ export function useElement<ComponentClass extends HTMLElement, Props extends Ele
       exposeProperties(this);
       for (const name in props) {
         const oldProp = this.getAttribute(name);
-        props[name] = oldProp ?? config.props[name];
+        let oldPropParsed = parseType(oldProp, config.props[name]);
+        if (typeof props[name] === 'boolean' && oldProp === '') {
+          oldPropParsed = true;
+        }
+        props[name] = oldPropParsed ?? config.props[name];
         createProperty(this, name);
         if (props[name] !== config.props[name]) {
           nonDefaultProps.push(name);
