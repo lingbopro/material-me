@@ -21,13 +21,13 @@ interface ComponentConfig<ComponentClass extends HTMLElement, Props extends Elem
   /** 属性监听列表 */
   syncProps?: string[];
   /** 初始化函数 */
-  setup?: (this: ComponentClass & Props, shadowRoot: ShadowRoot) => SetupOptions;
+  setup?: (this: ComponentClass & Props, shadowRoot: ShadowRoot) => SetupOptions<ComponentClass, Props>;
 }
 
 /**
  * 初始化函数返回的配置项
  */
-interface SetupOptions {
+interface SetupOptions<ComponentClass extends HTMLElement, Props extends ElementProps> {
   /** 添加到文档回调 */
   onMount?: () => void;
   /** 从文档移除回调 */
@@ -39,7 +39,7 @@ interface SetupOptions {
   /** 暴露的方法 */
   expose?: { [key: string]: (...args: any[]) => any };
   /** 属性 setters */
-  propsSetter?: { [name: string]: (props: any) => void };
+  propsSetter?: { [name in keyof Props]?: (props: Props[name]) => void };
 }
 
 /**
@@ -91,7 +91,7 @@ export function useElement<ComponentClass extends HTMLElement, Props extends Ele
    */
   readonly define: (name: string) => void;
 } {
-  let setupOptions: SetupOptions;
+  let setupOptions: SetupOptions<ComponentClass, Props>;
   let props: ElementProps;
 
   /**
@@ -110,7 +110,7 @@ export function useElement<ComponentClass extends HTMLElement, Props extends Ele
           setupOptions.onAttributeChanged?.call(component, name, oldValue, parsedValue);
           props[name] = parsedValue;
           syncProperty(component, name);
-          setupOptions.propsSetter?.[name]?.call(component, parsedValue);
+          setupOptions.propsSetter?.[name]?.call(component, parsedValue as any);
         }
       },
       configurable: true,
