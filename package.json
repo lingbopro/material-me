@@ -13,8 +13,10 @@
   },
   "scripts": {
     "build": "node dev/scripts/script.mjs build",
+    "dev": "node dev/scripts/script.mjs server --no-min-bundle",
     "prepare": "husky",
     "script": "node dev/scripts/script.mjs",
+    "serve": "node dev/scripts/script.mjs server",
     "watch": "node dev/scripts/script.mjs watch",
     "watch:dev": "node dev/scripts/script.mjs watch --no-min-bundle"
   },
