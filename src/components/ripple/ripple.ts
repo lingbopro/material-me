@@ -3,15 +3,21 @@ import template from './ripple.html';
 import style from './ripple.css';
 
 const name = 'mm-ripple';
-const props = {};
+const props = {
+  attached: false,
+};
 
 export class Ripple extends useElement({
   template,
   style,
   props,
+  syncProps: ['attached'],
   setup(shadowRoot) {
     const containerEl = shadowRoot.querySelector('.container') as HTMLDivElement;
     const rippleTemplateEl = shadowRoot.querySelector('.ripple-template') as HTMLDivElement;
+
+    /** 父元素（用于吸附模式） */
+    const parent = this.parentElement;
 
     /** 波纹点击开始 */
     const rippleTouchStart = (event: MouseEvent, node?: HTMLElement) => {
@@ -93,8 +99,36 @@ export class Ripple extends useElement({
       node.addEventListener('mouseleave', onMouseLeave);
       node.addEventListener('pointerdown', onPointerDown);
     };
+    const removeListeners = (node: HTMLElement) => {
+      node.removeEventListener('mouseover', onMouseOver);
+      node.removeEventListener('mouseleave', onMouseLeave);
+      node.removeEventListener('pointerdown', onPointerDown);
+    };
     addListeners(this);
-    return {};
+    return {
+      onMount: () => {
+        if (this.attached && parent) {
+          addListeners(parent);
+        }
+      },
+      onUnmount: () => {
+        if (this.attached && parent) {
+          removeListeners(parent);
+        }
+      },
+      propsSetter: {
+        attached: (prop) => {
+          if (!this.isConnected) {
+            return;
+          }
+          if (!prop) {
+            addListeners(this);
+          } else {
+            removeListeners(this);
+          }
+        },
+      },
+    };
   },
 }) {}
 
