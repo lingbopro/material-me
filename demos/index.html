@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Material-Me Demo</title>
+    <link rel="stylesheet" href="./assets/css/index.css" />
+    <style>
+      a:link,
+      a:hover,
+      a:active,
+      a:visited {
+        color: var(--mm-color-primary);
+      }
+      .links mm-ripple {
+        display: block;
+      }
+      .links a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        font-size: large;
+      }
+      .links h2 {
+        font-size: larger;
+        margin-top: 0;
+      }
+    </style>
+    <script type="module">
+      import '../../dist/components/page.js';
+      import '../../dist/components/ripple.js';
+    </script>
+  </head>
+  <body>
+    <mm-page theme="auto">
+      <main>
+        <h1>Material-Me Demo</h1>
+        <section class="links">
+          <h2>Components</h2>
+          <mm-ripple><a href="./components/ripple.html">Ripple</a></mm-ripple>
+        </section>
+        <section class="links">
+          <h2>Others</h2>
+          <mm-ripple><a href="./esm.html">ESM Importing</a></mm-ripple>
+        </section>
+      </main>
+    </mm-page>
+    <script defer src="../dist/material-me.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Material-Me ESM Importing Demo</title>
+  </head>
+  <body>
+    <div id="root">see console output.</div>
+    <script type="module">
+      async function main() {
+        const materialMe = await import('../dist/main.js');
+        window.materialMe = materialMe;
+        console.log('ESM Imported Module: ', materialMe);
+      }
+      main();
+    </script>
+  </body>
+</html>

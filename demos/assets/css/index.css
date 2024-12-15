@@ -1,0 +1,27 @@
+html,
+body,
+#root,
+mm-page {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+main {
+  padding: 20px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 3px inherit;
+}
+section {
+  margin: 5px 0;
+  padding: 20px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  border: rgb(var(--mm-color-outline-variant)) solid 1px;
+}

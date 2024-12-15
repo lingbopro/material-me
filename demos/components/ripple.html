@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ripple · Material-Me Component Demo</title>
+    <link rel="stylesheet" href="../assets/css/index.css" />
+    <style>
+      #ripple-1,
+      #ripple-2,
+      #ripple-3,
+      #ripple-4,
+      #ripple-5-container {
+        padding: 10px;
+      }
+      #ripple-2 {
+        color: #ffa8ec;
+      }
+      #ripple-3 {
+        --mm-ripple-color: lightblue;
+      }
+      #ripple-4 {
+        display: block;
+      }
+      #ripple-5-container {
+        display: block;
+        position: relative;
+      }
+    </style>
+    <script type="module">
+      import '../../dist/components/page.js';
+      import '../../dist/components/ripple.js';
+    </script>
+  </head>
+  <body>
+    <mm-page id="root" theme="auto">
+      <main>
+        <h1>Ripple</h1>
+        <section>
+          <mm-ripple id="ripple-1"> Simple Ripple </mm-ripple>
+          <mm-ripple id="ripple-2"> Ripple with text color </mm-ripple>
+          <mm-ripple id="ripple-3"> Ripple with specified color </mm-ripple>
+        </section>
+        <section>
+          <mm-ripple id="ripple-4"> Full line Ripple </mm-ripple>
+        </section>
+        <section>
+          <div id="ripple-5-container">
+            Attached Ripple
+            <mm-ripple id="ripple-5" attached></mm-ripple>
+          </div>
+        </section>
+      </main>
+    </mm-page>
+  </body>
+</html>
