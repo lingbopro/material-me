@@ -14,7 +14,9 @@
   "scripts": {
     "build": "node dev/scripts/script.mjs build",
     "prepare": "husky",
-    "script": "node dev/scripts/script.mjs"
+    "script": "node dev/scripts/script.mjs",
+    "watch": "node dev/scripts/script.mjs watch",
+    "watch:dev": "node dev/scripts/script.mjs watch --no-min-bundle"
   },
   "author": {
     "name": "lingbopro",

@@ -4,9 +4,11 @@
 
 import { debug, log, logError, logSuccess } from './lib/utils.mjs';
 import * as buildScript from './lib/build.mjs';
+import * as watchScript from './lib/watch.mjs';
 
 const scripts = {
   build: buildScript,
+  watch: watchScript,
 };
 
 const argv = process.argv.slice(2);
@@ -25,6 +27,16 @@ Run options:
 
 `;
 
+let script;
+
+process.on('SIGINT', async () => {
+  if (cleanupFunc) {
+    await cleanupFunc();
+  }
+  log('Script execution stopped by user.');
+  process.exit(0);
+});
+
 async function main() {
   const startTime = Date.now();
   log('Material-Me Script Executor');
@@ -40,7 +52,7 @@ async function main() {
     process.exitCode = 2;
     return;
   }
-  const script = scripts[scriptName];
+  script = scripts[scriptName];
   const { execute, cleanup, docs } = script;
   if (runOptions.includes('--help')) {
     log(`Docs of script ${scriptName}:`);
@@ -61,21 +73,25 @@ async function main() {
     return;
   }
   if (cleanup) {
-    log('Running cleanup...');
-    console.group('Cleanup output:');
-    try {
-      await cleanup(scriptOptions);
-      console.groupEnd();
-      logSuccess('Cleanup complete.');
-    } catch (error) {
-      console.groupEnd();
-      logError(`Error running cleanup for script ${scriptName}:`);
-      console.error(error);
-      process.exitCode = 1;
-      return;
-    }
+    await cleanupFunc();
   }
   logSuccess(`Completed in ${(Date.now() - startTime) / 1000}s.`);
+}
+
+async function cleanupFunc() {
+  log('Running cleanup...');
+  console.group('Cleanup output:');
+  try {
+    await script.cleanup(scriptOptions);
+    console.groupEnd();
+    logSuccess('Cleanup complete.');
+  } catch (error) {
+    console.groupEnd();
+    logError(`Error running cleanup for script ${scriptName}:`);
+    console.error(error);
+    process.exitCode = 1;
+    return;
+  }
 }
 
 main();

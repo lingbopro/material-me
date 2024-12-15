@@ -57,17 +57,19 @@ export async function main(options) {
   logSuccess('success generated bundles');
   log('cleaning up temp dir...');
   await fs.promises.rm(path.join(root, '.__compile_cache__'), { recursive: true });
-  log('generating minified bundle...');
-  const generateMinifiedBundleResult = await rollup({
-    input: path.resolve(root, 'exports.js'),
-    plugins: [...basicPlugins, ...minifiedBundlePlugins],
-  });
-  const generateMinifiedBundleOutput = await generateMinifiedBundleResult.write({
-    file: path.resolve(root, 'dist', 'material-me.min.js'),
-    format: 'umd',
-    ...basicOutputConfig,
-  });
-  debug({ generateMinifiedBundleResult, generateMinifiedBundleOutput });
+  if (!options.includes('--no-min-bundle')) {
+    log('generating minified bundle...');
+    const generateMinifiedBundleResult = await rollup({
+      input: path.resolve(root, 'exports.js'),
+      plugins: [...basicPlugins, ...minifiedBundlePlugins],
+    });
+    const generateMinifiedBundleOutput = await generateMinifiedBundleResult.write({
+      file: path.resolve(root, 'dist', 'material-me.min.js'),
+      format: 'umd',
+      ...basicOutputConfig,
+    });
+    debug({ generateMinifiedBundleResult, generateMinifiedBundleOutput });
+  }
   logSuccess('success generated minified bundle');
 }
 
@@ -95,7 +97,7 @@ Usage: build [options]
 
 Options:
   --no-finally-clean  Do not clean up temp directory after build
-  --debug             Enable debug mode
+  --no-min-bundle     Do not generate minified bundle
 
-  Examples:
+Examples:
   $ pnpm scripts build`;
