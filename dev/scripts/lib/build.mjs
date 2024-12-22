@@ -43,15 +43,24 @@ export async function main(options) {
   );
   log('compiling TypeScript...');
   // This may not seem like standard usage, but it can at least reduce the waiting time by 3s
-  child_process.spawnSync(
+  const tscProcess = child_process.spawn(
     'node',
     [path.join(root, 'node_modules', 'typescript', 'lib', 'tsc.js')],
     { cwd: root },
   );
+  await new Promise((resolve) => tscProcess.once('exit', resolve));
   logSuccess('success compiled TypeScript');
   log('generating bundles...');
-  const globedFiles = fs.globSync(
-    path.resolve(root, '.__compile_cache__', '**', '*.js'),
+  const globedFiles = await new Promise((resolve) =>
+    fs.glob(
+      path.resolve(root, '.__compile_cache__', '**', '*.js'),
+      (err, matches) => {
+        if (err) {
+          throw err;
+        }
+        resolve(matches);
+      },
+    ),
   );
   debug({ globedFiles });
   const generateBundlesResult = await rollup({
