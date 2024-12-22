@@ -26,6 +26,9 @@ export async function main(options) {
       signal: watcherAbortController.signal,
     },
     async (eventType, filename) => {
+      if (!filename) {
+        return;
+      }
       const normalizedPathname = path.resolve(root, filename);
       const isIgnored =
         checkPath(path.join(root, '.__compile_cache__'), normalizedPathname) ||
