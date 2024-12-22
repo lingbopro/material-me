@@ -38,7 +38,7 @@ export async function main(options) {
       }
       debug(`File changes detected: ${filename} (type: ${eventType})`);
       taskStack.push({ eventType, filename });
-    }
+    },
   );
   intervalId = setInterval(async () => {
     if (taskStack.length > 0 && !taskProcessing) {

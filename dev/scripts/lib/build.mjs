@@ -34,13 +34,25 @@ const minifiedBundlePlugins = [
 export async function main(options) {
   log('starting bundle...');
   log('copying files...');
-  await fs.promises.cp(path.join(root, 'src'), path.join(root, '.__compile_cache__'), { recursive: true });
+  await fs.promises.cp(
+    path.join(root, 'src'),
+    path.join(root, '.__compile_cache__'),
+    {
+      recursive: true,
+    },
+  );
   log('compiling TypeScript...');
   // This may not seem like standard usage, but it can at least reduce the waiting time by 3s
-  child_process.spawnSync('node', [path.join(root, 'node_modules', 'typescript', 'lib', 'tsc.js')], { cwd: root });
+  child_process.spawnSync(
+    'node',
+    [path.join(root, 'node_modules', 'typescript', 'lib', 'tsc.js')],
+    { cwd: root },
+  );
   logSuccess('success compiled TypeScript');
   log('generating bundles...');
-  const globedFiles = fs.globSync(path.resolve(root, '.__compile_cache__', '**', '*.js'));
+  const globedFiles = fs.globSync(
+    path.resolve(root, '.__compile_cache__', '**', '*.js'),
+  );
   debug({ globedFiles });
   const generateBundlesResult = await rollup({
     // input: path.resolve(__dirname, 'exports__compile_cache.js'),
@@ -56,18 +68,21 @@ export async function main(options) {
   debug({ generateBundlesResult, generateBundlesOutput });
   logSuccess('success generated bundles');
   log('cleaning up temp dir...');
-  await fs.promises.rm(path.join(root, '.__compile_cache__'), { recursive: true });
+  await fs.promises.rm(path.join(root, '.__compile_cache__'), {
+    recursive: true,
+  });
   if (!options.includes('--no-min-bundle')) {
     log('generating minified bundle...');
     const generateMinifiedBundleResult = await rollup({
       input: path.resolve(root, 'exports.js'),
       plugins: [...basicPlugins, ...minifiedBundlePlugins],
     });
-    const generateMinifiedBundleOutput = await generateMinifiedBundleResult.write({
-      file: path.resolve(root, 'dist', 'material-me.min.js'),
-      format: 'umd',
-      ...basicOutputConfig,
-    });
+    const generateMinifiedBundleOutput =
+      await generateMinifiedBundleResult.write({
+        file: path.resolve(root, 'dist', 'material-me.min.js'),
+        format: 'umd',
+        ...basicOutputConfig,
+      });
     debug({ generateMinifiedBundleResult, generateMinifiedBundleOutput });
   }
   logSuccess('success generated minified bundle');
@@ -86,9 +101,14 @@ export async function execute(options) {
 }
 
 export async function cleanup(options) {
-  if (fs.existsSync(path.join(root, '.__compile_cache__')) && !options.includes('--no-finally-clean')) {
+  if (
+    fs.existsSync(path.join(root, '.__compile_cache__')) &&
+    !options.includes('--no-finally-clean')
+  ) {
     log('cleaning up temp dir...');
-    await fs.promises.rm(path.join(root, '.__compile_cache__'), { recursive: true });
+    await fs.promises.rm(path.join(root, '.__compile_cache__'), {
+      recursive: true,
+    });
   }
 }
 

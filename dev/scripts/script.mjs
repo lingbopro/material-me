@@ -16,8 +16,12 @@ const scripts = {
 const argv = process.argv.slice(2);
 const scriptNameIndex = argv.findIndex((arg) => !arg.startsWith('-'));
 const scriptName = argv[scriptNameIndex];
-const runOptions = argv.filter((arg, index) => arg.startsWith('-') && index < scriptNameIndex);
-const scriptOptions = argv.filter((arg, index) => arg.startsWith('-') && index > scriptNameIndex);
+const runOptions = argv.filter(
+  (arg, index) => arg.startsWith('-') && index < scriptNameIndex,
+);
+const scriptOptions = argv.filter(
+  (arg, index) => arg.startsWith('-') && index > scriptNameIndex,
+);
 
 const docsStr = `
 Usage: pnpm script [run-options] [script-name] [script-options]

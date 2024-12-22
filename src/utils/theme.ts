@@ -185,7 +185,11 @@ export function generateCSSKeys(theme: Theme): string {
   const toRgbValue = (color: RgbColor) => {
     return `${color.r}, ${color.g}, ${color.b}`;
   };
-  const generateKeys = (obj: any, prefix: string, valueProcessor?: (value: any) => string) => {
+  const generateKeys = (
+    obj: any,
+    prefix: string,
+    valueProcessor?: (value: any) => string,
+  ) => {
     return Object.keys(obj)
       .map((key) => {
         const value = obj[key];
@@ -197,8 +201,16 @@ export function generateCSSKeys(theme: Theme): string {
       .join('\n');
   };
 
-  const keysColorLight = generateKeys(theme.colors.light, 'color-light', (value: RgbColor) => toRgbValue(value));
-  const keysColorDark = generateKeys(theme.colors.dark, 'color-dark', (value: RgbColor) => toRgbValue(value));
+  const keysColorLight = generateKeys(
+    theme.colors.light,
+    'color-light',
+    (value: RgbColor) => toRgbValue(value),
+  );
+  const keysColorDark = generateKeys(
+    theme.colors.dark,
+    'color-dark',
+    (value: RgbColor) => toRgbValue(value),
+  );
   const keysElevations = generateKeys(theme.elevations, 'elevation');
   const keys = keysColorLight + keysColorDark + keysElevations;
   return keys;
@@ -210,7 +222,10 @@ export function generateCSSKeys(theme: Theme): string {
  * @param theme 主题对象（仅用于提取键名）
  * @returns
  */
-export function generateOverrideColorKeys(scheme: 'light' | 'dark', theme: Theme = defaultTheme): string {
+export function generateOverrideColorKeys(
+  scheme: 'light' | 'dark',
+  theme: Theme = defaultTheme,
+): string {
   const keys = Object.keys(theme.colors[scheme]).map((key) => {
     const casedKey = toKebabCase(key);
     return `--mm-color-${casedKey}: var(--mm-color-${scheme}-${casedKey});`;

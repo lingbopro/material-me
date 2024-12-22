@@ -5,7 +5,23 @@ export default {
   rules: {
     // types declared in Conventional Commits specification & @commitlint/config-conventional
     // see: https://www.conventionalcommits.org/en/v1.0.0/#summary
-    'type-enum': [2, 'always', ['build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test']],
+    'type-enum': [
+      2,
+      'always',
+      [
+        'build',
+        'chore',
+        'ci',
+        'docs',
+        'feat',
+        'fix',
+        'perf',
+        'refactor',
+        'revert',
+        'style',
+        'test',
+      ],
+    ],
     'scope-enum': [
       2,
       'always',

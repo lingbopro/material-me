@@ -13,8 +13,12 @@ export class Ripple extends useElement({
   props,
   syncProps: ['attached'],
   setup(shadowRoot) {
-    const containerEl = shadowRoot.querySelector('.container') as HTMLDivElement;
-    const rippleTemplateEl = shadowRoot.querySelector('.ripple-template') as HTMLDivElement;
+    const containerEl = shadowRoot.querySelector(
+      '.container',
+    ) as HTMLDivElement;
+    const rippleTemplateEl = shadowRoot.querySelector(
+      '.ripple-template',
+    ) as HTMLDivElement;
 
     /** 父元素（用于吸附模式） */
     const parent = this.parentElement;
@@ -68,10 +72,13 @@ export class Ripple extends useElement({
       // 点击结束处理方法
       const touchEnd = () => {
         // 淡出动画
-        const fadeOutAnimation = rippleEl.animate([{ opacity: 0.24 }, { opacity: 0 }], {
-          duration: 400,
-          fill: 'forwards',
-        });
+        const fadeOutAnimation = rippleEl.animate(
+          [{ opacity: 0.24 }, { opacity: 0 }],
+          {
+            duration: 400,
+            fill: 'forwards',
+          },
+        );
         // 移除元素
         fadeOutAnimation.addEventListener('finish', () => {
           rippleEl.remove();

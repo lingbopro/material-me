@@ -1,5 +1,9 @@
 import { useElement } from '../../core/element';
-import { defaultTheme, generateCSSKeys, overrideColorKeys } from '../../utils/theme';
+import {
+  defaultTheme,
+  generateCSSKeys,
+  overrideColorKeys,
+} from '../../utils/theme';
 import template from './page.html';
 import style from './page.css';
 

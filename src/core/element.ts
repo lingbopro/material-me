@@ -21,7 +21,10 @@ interface ComponentConfig<Props extends ElementProps> {
   /** 属性监听列表 */
   syncProps?: string[];
   /** 初始化函数 */
-  setup?: (this: HTMLElement & Props, shadowRoot: ShadowRoot) => SetupOptions<Props>;
+  setup?: (
+    this: HTMLElement & Props,
+    shadowRoot: ShadowRoot,
+  ) => SetupOptions<Props>;
 }
 
 /**
@@ -35,7 +38,11 @@ interface SetupOptions<Props extends ElementProps> {
   /** 移动到新文档回调 */
   onAdopt?: () => void;
   /** 属性更改、添加、删除、替换回调 */
-  onAttributeChanged?: (name: string, oldValue: PropType, newValue: PropType) => void;
+  onAttributeChanged?: (
+    name: string,
+    oldValue: PropType,
+    newValue: PropType,
+  ) => void;
   /** 暴露的方法 */
   expose?: { [key: string]: (...args: any[]) => any };
   /** 属性 setters */
@@ -82,7 +89,7 @@ export function parseType(value: unknown, old: PropType) {
  * @returns 应继承的自定义元素类
  */
 export function useElement<Props extends ElementProps>(
-  config: ComponentConfig<Props>
+  config: ComponentConfig<Props>,
 ): {
   new (): HTMLElement & Props;
   /**
@@ -98,7 +105,10 @@ export function useElement<Props extends ElementProps>(
    * 为此组件增加一个属性
    * @param name 属性名
    */
-  const createProperty = (component: MaterialMeGeneratedComponent, name: string) => {
+  const createProperty = (
+    component: MaterialMeGeneratedComponent,
+    name: string,
+  ) => {
     Object.defineProperty(component, name, {
       get: () => {
         return props[name];
@@ -107,7 +117,12 @@ export function useElement<Props extends ElementProps>(
         const oldValue = props[name];
         const parsedValue = parseType(value, oldValue);
         if (parsedValue !== props[name]) {
-          setupOptions.onAttributeChanged?.call(component, name, oldValue, parsedValue);
+          setupOptions.onAttributeChanged?.call(
+            component,
+            name,
+            oldValue,
+            parsedValue,
+          );
           props[name] = parsedValue;
           syncProperty(component, name);
           setupOptions.propsSetter?.[name]?.call(component, parsedValue as any);
@@ -121,7 +136,10 @@ export function useElement<Props extends ElementProps>(
    * 处理一个属性的更改同步
    * @param name 属性名
    */
-  const syncProperty = (component: MaterialMeGeneratedComponent, name: string) => {
+  const syncProperty = (
+    component: MaterialMeGeneratedComponent,
+    name: string,
+  ) => {
     if (config.syncProps?.includes(name)) {
       const lowerKey = name.toLowerCase();
       const attrValue = component.getAttribute(lowerKey);
@@ -139,7 +157,9 @@ export function useElement<Props extends ElementProps>(
    * 暴露属性
    */
   const exposeProperties = (component: MaterialMeGeneratedComponent) => {
-    const exposeDescriptors = Object.getOwnPropertyDescriptors(setupOptions.expose ?? {});
+    const exposeDescriptors = Object.getOwnPropertyDescriptors(
+      setupOptions.expose ?? {},
+    );
     for (const key in exposeDescriptors) {
       const item = exposeDescriptors[key];
       const existing = Object.getOwnPropertyDescriptor(component, key);
@@ -173,7 +193,11 @@ export function useElement<Props extends ElementProps>(
         attachStylesheet(shadowRoot, config.style);
       }
       props = { ...config.props };
-      setupOptions = config.setup?.call(this as unknown as HTMLElement & Props, shadowRoot) ?? {};
+      setupOptions =
+        config.setup?.call(
+          this as unknown as HTMLElement & Props,
+          shadowRoot,
+        ) ?? {};
       const nonDefaultProps: string[] = [];
       exposeProperties(this);
       for (const name in props) {
@@ -214,5 +238,8 @@ export function useElement<Props extends ElementProps>(
       window.customElements.define(name, this);
     }
   }
-  return MaterialMeGeneratedComponent as unknown as { new (): HTMLElement & Props; readonly define: (name: string) => void };
+  return MaterialMeGeneratedComponent as unknown as {
+    new (): HTMLElement & Props;
+    readonly define: (name: string) => void;
+  };
 }

@@ -16,6 +16,7 @@ export function debug(message, ...optionalParams) {
 }
 export function isSubDir(parent, dir) {
   const relative = path.relative(parent, dir);
-  const isSubdir = relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+  const isSubdir =
+    relative && !relative.startsWith('..') && !path.isAbsolute(relative);
   return !!isSubdir;
 }
