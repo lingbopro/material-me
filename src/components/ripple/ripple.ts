@@ -21,7 +21,10 @@ export class Ripple extends useElement({
     ) as HTMLDivElement;
 
     /** 父元素（用于吸附模式） */
-    const parent = this.parentElement;
+    const parent =
+      this.parentNode instanceof ShadowRoot
+        ? (this.parentNode.host as HTMLElement)
+        : (this.parentNode as HTMLElement);
 
     /** 波纹点击开始 */
     const rippleTouchStart = (event: MouseEvent, node?: HTMLElement) => {
@@ -128,10 +131,11 @@ export class Ripple extends useElement({
           if (!this.isConnected) {
             return;
           }
-          if (!prop) {
-            addListeners(this);
+          const parent = this.parentElement;
+          if (prop) {
+            if (parent) addListeners(parent);
           } else {
-            removeListeners(this);
+            if (parent) removeListeners(parent);
           }
         },
       },
