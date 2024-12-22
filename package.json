@@ -41,6 +41,7 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-terser": "^0.4.4",
     "husky": "^9.1.7",
+    "prettier": "^3.4.2",
     "rollup": "^4.27.4",
     "rollup-plugin-string": "^3.0.0",
     "typescript": "^5.7.2"

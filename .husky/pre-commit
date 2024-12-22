@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+# Check with prettier
+PRETTIER_ARGS="--log-level=warn --check ."
+if [ "$(which prettier > /dev/null)" ]; then
+  # Use globally installed prettier
+  prettier $PRETTIER_ARGS
+else
+  # Use installed prettier in node_modules
+  npx --no -- prettier $PRETTIER_ARGS
+fi
