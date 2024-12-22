@@ -17,24 +17,27 @@ let server;
 export async function main(options) {
   log('starting server...');
   server = http.createServer(async (req, res) => {
-    debug(`Got request: ${req.method} '${req.url}'`);
-    const url = '.' + req.url;
+    const reqUrl = new URL(
+      `http://${process.env.HOST ?? 'localhost'}${req.url}`,
+    ).pathname;
+    debug(`Got request: ${req.method} '${reqUrl}'`);
+    const url = '.' + reqUrl;
     const filePath = path.join(root, url);
     const extension = path.extname(filePath).slice(1);
     if (req.method === 'GET') {
-      if (req.url === '/') {
+      if (reqUrl === '/') {
         res.writeHead(302, { Location: '/demos/index.html' });
         res.end();
         return;
       }
       if (!fs.existsSync(filePath)) {
         res.writeHead(404);
-        res.end(`Cannot ${req.method} ${req.url}: Not Found`);
+        res.end(`Cannot ${req.method} ${reqUrl}: Not Found`);
         return;
       }
       if (!(await fs.promises.lstat(filePath)).isFile()) {
         res.writeHead(404);
-        res.end(`Cannot ${req.method} ${req.url}: Is not a file`);
+        res.end(`Cannot ${req.method} ${reqUrl}: Is not a file`);
         return;
       }
       const mimeType = MIMETypes[extension] || 'text/plain';
@@ -44,7 +47,7 @@ export async function main(options) {
       return;
     } else {
       res.writeHead(405);
-      res.end(`Cannot ${req.method} ${req.url}: Method Not Allowed`);
+      res.end(`Cannot ${req.method} ${reqUrl}: Method Not Allowed`);
       return;
     }
   });
