@@ -33,6 +33,7 @@ export default {
         'utils',
         // component names
         // add component name here when adding new component
+        'button',
         'page',
         'ripple',
       ],
