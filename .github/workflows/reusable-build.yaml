@@ -1,0 +1,49 @@
+name: Build (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: 'Node.js version'
+        type: string
+        required: false
+        default: 22.x
+      pnpm-version:
+        description: 'pnpm version'
+        type: string
+        required: false
+        default: 9.12.3
+    outputs:
+      artifact-url:
+        description: Artifact URL of the builded repo
+        value: ${{ jobs.build.outputs.artifact-url }}
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-url: ${{ steps.upload-artifact.outputs.artifact-url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up pnpm ${{ inputs.pnpm-version }}
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpm-version }}
+          run_install: false
+      - name: Set up Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build
+        run: pnpm run build
+      - name: Upload artifact
+        id: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-result
+          path: ./
