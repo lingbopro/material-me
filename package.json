@@ -14,7 +14,7 @@
   "scripts": {
     "build": "node dev/scripts/script.mjs build",
     "dev": "node dev/scripts/script.mjs server --no-min-bundle",
-    "prepare": "husky",
+    "prepare": "git config set core.autocrlf false && git config set core.eol lf && husky",
     "script": "node dev/scripts/script.mjs",
     "serve": "node dev/scripts/script.mjs server",
     "test": "web-test-runner",
