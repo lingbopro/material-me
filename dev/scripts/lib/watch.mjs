@@ -9,6 +9,17 @@ const __dirname = path.dirname(__filename);
 
 const root = path.resolve(__dirname, '../../..');
 
+const ignoredPaths = [
+  'node_modules',
+  'test',
+  'dist',
+  'coverage',
+  'dev',
+  '.vscode',
+  '.github',
+  '.git',
+];
+
 const watcherAbortController = new AbortController();
 const taskStack = [];
 let taskProcessing = false;
@@ -30,12 +41,9 @@ export async function main(options) {
         return;
       }
       const normalizedPathname = path.resolve(root, filename);
-      const isIgnored =
-        checkPath(path.join(root, '.__compile_cache__'), normalizedPathname) ||
-        checkPath(path.join(root, 'node_modules'), normalizedPathname) ||
-        checkPath(path.join(root, 'dist'), normalizedPathname) ||
-        checkPath(path.join(root, 'dev'), normalizedPathname) ||
-        checkPath(path.join(root, '.git'), normalizedPathname);
+      const isIgnored = ignoredPaths.some((ignoredPath) =>
+        checkPath(path.join(root, ignoredPath), normalizedPathname),
+      );
       if (isIgnored) {
         return;
       }

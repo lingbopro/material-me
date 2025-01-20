@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 
 const root = path.resolve(__dirname, '../../..');
 
-const port = 5114;
+const port = process.env.PORT ?? 8514;
 let server;
 
 export async function main(options) {
@@ -21,29 +21,59 @@ export async function main(options) {
       `http://${process.env.HOST ?? 'localhost'}${req.url}`,
     ).pathname;
     debug(`Got request: ${req.method} '${reqUrl}'`);
-    const url = '.' + reqUrl;
-    const filePath = path.join(root, url);
-    const extension = path.extname(filePath).slice(1);
-    if (req.method === 'GET') {
+
+    const getFileStat = async (filePath) => {
+      if (!fs.existsSync(filePath)) {
+        return 'NOT_FOUND';
+      }
+      if (!(await fs.promises.lstat(filePath)).isFile()) {
+        return 'NOT_A_FILE';
+      }
+      return 'EXISTS';
+    };
+    const sendFile = async (res, filePath) => {
+      const extension = path.extname(filePath).slice(1);
+      const mimeType = MIMETypes[extension] || 'text/plain';
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('X-Real-File-Path', filePath);
+      fs.createReadStream(filePath).pipe(res);
+    };
+    const resolveAndSendFile = async (reqUrl) => {
+      const filePath = path.join(root, reqUrl);
       if (reqUrl === '/') {
         res.writeHead(302, { Location: '/demos/index.html' });
         res.end();
         return;
       }
-      if (!fs.existsSync(filePath)) {
-        res.writeHead(404);
-        res.end(`Cannot ${req.method} ${reqUrl}: Not Found`);
-        return;
+      const stat = await getFileStat(filePath);
+      if (stat !== 'EXISTS') {
+        // try to resolve the file as .js
+        if (path.extname(filePath) !== '.js') {
+          const jsFilePath = `${filePath}.js`;
+          const jsStat = await getFileStat(jsFilePath);
+          if (jsStat === 'EXISTS') {
+            sendFile(res, jsFilePath);
+            return;
+          }
+        }
+
+        if (stat === 'NOT_FOUND') {
+          res.writeHead(404);
+          res.end(`Cannot ${req.method} ${reqUrl}: Not Found`);
+          return;
+        }
+        if (stat === 'NOT_A_FILE') {
+          res.writeHead(404);
+          res.end(`Cannot ${req.method} ${reqUrl}: Is not a file`);
+          return;
+        }
+      } else {
+        sendFile(res, filePath);
       }
-      if (!(await fs.promises.lstat(filePath)).isFile()) {
-        res.writeHead(404);
-        res.end(`Cannot ${req.method} ${reqUrl}: Is not a file`);
-        return;
-      }
-      const mimeType = MIMETypes[extension] || 'text/plain';
-      res.setHeader('Content-Type', mimeType);
-      res.setHeader('X-Real-File-Path', filePath);
-      fs.createReadStream(filePath).pipe(res);
+    };
+
+    if (req.method === 'GET') {
+      resolveAndSendFile(reqUrl);
       return;
     } else {
       res.writeHead(405);
