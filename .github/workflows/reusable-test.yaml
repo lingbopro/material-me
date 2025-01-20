@@ -1,0 +1,89 @@
+name: Test (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: 'Node.js version'
+        type: string
+        required: false
+        default: 22.x
+      pnpm-version:
+        description: 'pnpm version'
+        type: string
+        required: false
+        default: 9.12.3
+      result-artifact-url:
+        description: 'Artifact URL of the build result (dist folder)'
+        type: string
+        required: true
+      run-coverage:
+        description: 'Run coverage tests'
+        type: boolean
+        required: false
+        default: false
+    outputs:
+      coverage-report-artifact-url:
+        description: Artifact URL of the coverage report
+        value: ${{ jobs.test-coverage.outputs.coverage-report-artifact-url }}
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up pnpm ${{ inputs.pnpm-version }}
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpm-version }}
+          run_install: false
+      - name: Set up Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Download build result
+        uses: actions/download-artifact@v4
+        with:
+          name: build-result
+          path: ./
+      - name: Run tests
+        run: pnpm test
+  test-coverage:
+    name: Coverage test
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-coverage }}
+    outputs:
+      coverage-report-artifact-url: ${{ steps.upload-artifact.outputs.artifact-url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up pnpm ${{ inputs.pnpm-version }}
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ inputs.pnpm-version }}
+          run_install: false
+      - name: Set up Node.js ${{ inputs.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Download build result
+        uses: actions/download-artifact@v4
+        with:
+          name: build-result
+          path: ./
+      - name: Run coverage tests
+        run: pnpm test:coverage
+      - name: Upload coverage report
+        id: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./coverage/lcov-report

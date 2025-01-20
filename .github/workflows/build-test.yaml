@@ -1,4 +1,4 @@
-name: Build
+name: Build + Test
 
 on:
   push:
@@ -14,3 +14,10 @@ jobs:
   build:
     name: Build
     uses: ./.github/workflows/reusable-build.yaml
+  test:
+    name: Test
+    needs: build
+    uses: ./.github/workflows/reusable-test.yaml
+    with:
+      result-artifact-url: ${{ needs.build.outputs.artifact-url }}
+      run-coverage: true
