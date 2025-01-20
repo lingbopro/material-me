@@ -50,7 +50,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-result
-          path: ./
+          path: ./dist
       - name: Install playwright browsers
         run: npx playwright install --with-deps
       - name: Run tests
@@ -80,7 +80,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-result
-          path: ./
+          path: ./dist
       - name: Install playwright browsers
         run: npx playwright install --with-deps
       - name: Run coverage tests
