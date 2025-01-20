@@ -51,6 +51,8 @@ jobs:
         with:
           name: build-result
           path: ./
+      - name: Set up tests
+        run: pnpm test:setup
       - name: Run tests
         run: pnpm test
   test-coverage:
@@ -79,6 +81,8 @@ jobs:
         with:
           name: build-result
           path: ./
+      - name: Set up tests
+        run: pnpm test:setup
       - name: Run coverage tests
         run: pnpm test:coverage
       - name: Upload coverage report
