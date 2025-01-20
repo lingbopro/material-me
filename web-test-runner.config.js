@@ -3,6 +3,7 @@ import { playwrightLauncher } from '@web/test-runner-playwright';
 
 export default {
   concurrency: 10,
+  concurrentBrowsers: 3,
   files: ['test/**/*.test.ts', 'test/**/*.test.js'],
   nodeResolve: true,
   preserveSymlinks: true,
