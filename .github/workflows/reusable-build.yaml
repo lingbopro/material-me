@@ -15,7 +15,7 @@ on:
         default: 9.12.3
     outputs:
       artifact-url:
-        description: Artifact URL of the builded repo
+        description: Artifact URL of the build result (dist folder)
         value: ${{ jobs.build.outputs.artifact-url }}
 
 jobs:
@@ -46,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-result
-          path: ./
+          path: ./dist
