@@ -1,0 +1,40 @@
+:host {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  position: relative;
+  aspect-ratio: 1;
+  color: rgb(var(--mm-color-primary));
+  fill: currentColor;
+  overflow: hidden;
+  border-radius: 24px;
+  min-height: 40px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  --mm-ripple-color: currentColor;
+  transition: all 0.12s;
+}
+:host([type='filled']) {
+  background-color: rgb(var(--mm-color-primary));
+  color: rgb(var(--mm-color-on-primary));
+}
+:host([type='filled-tonal']) {
+  background-color: rgb(var(--mm-color-secondary-container));
+  color: rgb(var(--mm-color-on-secondary-container));
+}
+:host([type='filled-tonal']:hover) {
+  box-shadow: var(--mm-elevation-level1);
+}
+:host([type='outlined']) {
+  color: rgb(var(--mm-color-primary));
+  background-color: initial;
+  border: solid 1px rgb(var(--mm-color-outline));
+}
+::slotted {
+  width: 100%;
+  height: 100%;
+}

@@ -35,6 +35,7 @@ export default {
         // add component name here when adding new component
         'button',
         'icon',
+        'icon-button',
         'page',
         'ripple',
       ],
