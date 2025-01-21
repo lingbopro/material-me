@@ -12,6 +12,7 @@ const root = path.resolve(__dirname, '../../..');
 const ignoredPaths = [
   'node_modules',
   'test',
+  'demos',
   'dist',
   'coverage',
   'dev',
