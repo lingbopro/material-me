@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAB · Material-Me Component Demo</title>
+    <link rel="stylesheet" href="../assets/css/index.css" />
+    <style></style>
+    <script type="module">
+      import '../../dist/components/page.js';
+      import '../../dist/components/fab.js';
+      import '../../dist/components/icon.js';
+    </script>
+  </head>
+  <body>
+    <mm-page id="root" theme="auto">
+      <main>
+        <h1>FAB (Floating Icon Button)</h1>
+        <section>
+          <mm-fab>
+            <mm-icon title="Add">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                <path
+                  d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                />
+              </svg>
+            </mm-icon>
+          </mm-fab>
+        </section>
+        <section>
+          <p>Extended</p>
+          <mm-fab>
+            <mm-icon title="Add" slot="start">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                <path
+                  d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                />
+              </svg>
+            </mm-icon>
+            Add
+            <mm-icon title="Menu" slot="end">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                <path
+                  d="M120-240v-80h720v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"
+                />
+              </svg>
+            </mm-icon>
+          </mm-fab>
+        </section>
+      </main>
+    </mm-page>
+  </body>
+</html>

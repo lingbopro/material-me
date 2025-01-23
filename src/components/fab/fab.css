@@ -1,0 +1,33 @@
+:host {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  box-sizing: border-box;
+  position: relative;
+  box-shadow: var(--mm-elevation-level3);
+  background-color: rgb(var(--mm-color-primary-container));
+  color: rgb(var(--mm-color-on-primary-container));
+  font-size: 0.875rem;
+  text-transform: capitalize;
+  text-overflow: ellipsis;
+  border-radius: 16px;
+  min-width: 56px;
+  min-height: 56px;
+  overflow: hidden;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+:host(:hover) {
+  box-shadow: var(--mm-elevation-level4);
+}
+::slotted([slot='start']) {
+  /* margin-left: -8px; */
+  margin-right: 8px;
+}
+::slotted([slot='end']) {
+  margin-left: 8px;
+  /* margin-right: -8px; */
+}
