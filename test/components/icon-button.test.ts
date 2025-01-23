@@ -2,7 +2,7 @@ import { expect, fixture, html } from '@open-wc/testing';
 import { waitBrowserEventLoop } from '../.helpers/utils';
 import { IconButton } from '../../dist/components/icon-button';
 
-describe('Button', () => {
+describe('Icon Button', () => {
   it('should be defined', async () => {
     const el = await fixture<IconButton>(
       html`<mm-icon-button></mm-icon-button>`,
