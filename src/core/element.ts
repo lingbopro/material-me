@@ -102,15 +102,16 @@ export function useElement<Props extends ElementProps, Expose extends object>(
   readonly define: (name: string) => void;
 } {
   let setupOptions: SetupOptions<Props, Expose>;
-  let props: ElementProps;
 
   /**
    * 为此组件增加一个属性
    * @param name 属性名
+   * @param props 组件的属性对象
    */
   const createProperty = (
-    component: MaterialMeGeneratedComponent,
+    component: generatedElement,
     name: string,
+    props: ElementProps,
   ) => {
     Object.defineProperty(component, name, {
       get: () => {
@@ -127,7 +128,7 @@ export function useElement<Props extends ElementProps, Expose extends object>(
             parsedValue,
           );
           props[name] = parsedValue;
-          syncProperty(component, name);
+          syncProperty(component, name, props);
           setupOptions.propsSetter?.[name]?.call(component, parsedValue as any);
         }
       },
@@ -138,10 +139,12 @@ export function useElement<Props extends ElementProps, Expose extends object>(
   /**
    * 处理一个属性的更改同步
    * @param name 属性名
+   * @param props 组件的属性对象
    */
   const syncProperty = (
-    component: MaterialMeGeneratedComponent,
+    component: generatedElement,
     name: string,
+    props: ElementProps,
   ) => {
     if (config.syncProps?.includes(name)) {
       const lowerKey = name.toLowerCase();
@@ -159,7 +162,7 @@ export function useElement<Props extends ElementProps, Expose extends object>(
   /**
    * 暴露属性
    */
-  const exposeProperties = (component: MaterialMeGeneratedComponent) => {
+  const exposeProperties = (component: generatedElement) => {
     const exposeDescriptors = Object.getOwnPropertyDescriptors(
       setupOptions.expose ?? {},
     );
@@ -183,7 +186,7 @@ export function useElement<Props extends ElementProps, Expose extends object>(
     }
   };
 
-  class MaterialMeGeneratedComponent extends HTMLElement {
+  class generatedElement extends HTMLElement {
     constructor() {
       super();
       const shadowRoot = this.attachShadow({ mode: 'open' });
@@ -195,7 +198,7 @@ export function useElement<Props extends ElementProps, Expose extends object>(
       } else {
         attachStylesheet(shadowRoot, config.style);
       }
-      props = { ...config.props };
+      let props: ElementProps = { ...config.props };
       setupOptions =
         config.setup?.call(
           this as unknown as HTMLElement & Props,
@@ -210,7 +213,7 @@ export function useElement<Props extends ElementProps, Expose extends object>(
           oldPropParsed = true;
         }
         props[name] = oldPropParsed ?? config.props[name];
-        createProperty(this, name);
+        createProperty(this, name, props);
         if (props[name] !== config.props[name]) {
           nonDefaultProps.push(name);
         }
@@ -241,7 +244,7 @@ export function useElement<Props extends ElementProps, Expose extends object>(
       window.customElements.define(name, this);
     }
   }
-  return MaterialMeGeneratedComponent as unknown as {
+  return generatedElement as unknown as {
     new (): HTMLElement & Props & Expose;
     readonly define: (name: string) => void;
   };
