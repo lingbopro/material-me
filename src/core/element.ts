@@ -11,7 +11,10 @@ type ElementProps = { [key: string]: PropType };
 /**
  * 组件行为
  */
-interface ComponentConfig<Props extends ElementProps> {
+interface ComponentConfig<
+  Props extends ElementProps,
+  Expose extends object = {},
+> {
   /** HTML模板字符串 */
   template: string;
   /** CSS 样式字符串 */
@@ -24,13 +27,13 @@ interface ComponentConfig<Props extends ElementProps> {
   setup?: (
     this: HTMLElement & Props,
     shadowRoot: ShadowRoot,
-  ) => SetupOptions<Props>;
+  ) => SetupOptions<Props, Expose>;
 }
 
 /**
  * 初始化函数返回的配置项
  */
-interface SetupOptions<Props extends ElementProps> {
+interface SetupOptions<Props extends ElementProps, Expose extends object = {}> {
   /** 添加到文档回调 */
   onMount?: () => void;
   /** 从文档移除回调 */
@@ -43,8 +46,8 @@ interface SetupOptions<Props extends ElementProps> {
     oldValue: PropType,
     newValue: PropType,
   ) => void;
-  /** 暴露的方法 */
-  expose?: { [key: string]: (...args: any[]) => any };
+  /** 暴露的属性、getter 和方法 */
+  expose?: Expose;
   /** 属性 setters */
   propsSetter?: { [name in keyof Props]?: (props: Props[name]) => void };
 }
@@ -88,17 +91,17 @@ export function parseType(value: unknown, old: PropType) {
  * @param config 组件配置
  * @returns 应继承的自定义元素类
  */
-export function useElement<Props extends ElementProps>(
-  config: ComponentConfig<Props>,
+export function useElement<Props extends ElementProps, Expose extends object>(
+  config: ComponentConfig<Props, Expose>,
 ): {
-  new (): HTMLElement & Props;
+  new (): HTMLElement & Props & Expose;
   /**
    * 注册自定义元素
    * @param name 元素名
    */
   readonly define: (name: string) => void;
 } {
-  let setupOptions: SetupOptions<Props>;
+  let setupOptions: SetupOptions<Props, Expose>;
   let props: ElementProps;
 
   /**
@@ -239,7 +242,7 @@ export function useElement<Props extends ElementProps>(
     }
   }
   return MaterialMeGeneratedComponent as unknown as {
-    new (): HTMLElement & Props;
+    new (): HTMLElement & Props & Expose;
     readonly define: (name: string) => void;
   };
 }
