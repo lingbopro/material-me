@@ -2,7 +2,7 @@
 
 # Check with prettier
 PRETTIER_ARGS="--log-level=warn --check ."
-if [ "$(which prettier > /dev/null)" ]; then
+if which prettier > /dev/null 2>&1; then
   # Use globally installed prettier
   prettier $PRETTIER_ARGS
 else
