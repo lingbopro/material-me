@@ -25,8 +25,7 @@ describe('Icon Button', () => {
   it('should handle click events', async () => {
     const el = await fixture<IconButton>(
       html`<mm-icon-button
-        onclick="this.clickCount = (this.clickCount ?? 0) + 1"
-      ></mm-icon-button>`,
+        onclick="this.clickCount = (this.clickCount ?? 0) + 1"></mm-icon-button>`,
     );
     el.dispatchEvent(new Event('click'));
     await waitBrowserEventLoop();

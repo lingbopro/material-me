@@ -21,8 +21,7 @@ describe('FAB', () => {
   it('should handle click events', async () => {
     const el = await fixture<Fab>(
       html`<mm-fab
-        onclick="this.clickCount = (this.clickCount ?? 0) + 1"
-      ></mm-fab>`,
+        onclick="this.clickCount = (this.clickCount ?? 0) + 1"></mm-fab>`,
     );
     el.dispatchEvent(new Event('click'));
     await waitBrowserEventLoop();
