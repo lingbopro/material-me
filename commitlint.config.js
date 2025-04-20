@@ -23,11 +23,13 @@ export default {
       ],
     ],
     'scope-enum': [
-      2,
+      1,
       'always',
       // scopes
       // see: https://www.conventionalcommits.org/en/v1.0.0/#specification
       [
+        // only for 'build(deps)'
+        'deps',
         // folder name in src/
         'core',
         'utils',
@@ -42,6 +44,8 @@ export default {
       ],
     ],
     'body-case': [0],
+    'body-max-length': [0],
+    'body-max-line-length': [0],
     'subject-case': [0],
   },
 };
