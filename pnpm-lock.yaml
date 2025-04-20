@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      lit:
+        specifier: ^3.2.1
+        version: 3.2.1
     devDependencies:
       '@babel/core':
         specifier: ^7.26.0
@@ -80,9 +84,6 @@ importers:
       husky:
         specifier: ^9.1.7
         version: 9.1.7
-      lit:
-        specifier: ^3.2.1
-        version: 3.2.1
       lit-element:
         specifier: ^4.1.1
         version: 4.1.1
