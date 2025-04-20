@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tab · Material-Me Component Demo</title>
+    <link rel="stylesheet" href="../assets/css/index.css" />
+    <style></style>
+    <script type="module">
+      import '../../dist/components/page.js';
+      import '../../dist/components/tab.js';
+      import '../../dist/components/button.js';
+    </script>
+  </head>
+  <body>
+    <mm-page id="root" theme="auto">
+      <main>
+        <h1>Tab</h1>
+        <section>
+          <mm-tab>
+            <mm-tab-item>Tab 1</mm-tab-item>
+            <mm-tab-item selected>Tab 2</mm-tab-item>
+            <mm-tab-item>Tab 3</mm-tab-item>
+          </mm-tab>
+        </section>
+        <section>
+          <div>
+            <p>Dynamic Generated Tab</p>
+            <mm-tab id="dynamic_tab_list">
+              <!-- Dynamically generated tabs will be inserted here -->
+            </mm-tab>
+            <script>
+              const tabListEl = document.getElementById('dynamic_tab_list');
+            </script>
+            <hr />
+            <!-- Add Tab -->
+            <p>
+              <label for="dynamic_tab_add_name">Tab Name</label>
+              <textarea type="text" id="dynamic_tab_add_name">
+                Tab
+              </textarea>
+              <label for="dynamic_tab_add_value">Tab Value</label>
+              <input type="text" id="dynamic_tab_add_value" />
+              <mm-button id="add_tab">Add</mm-button>
+              <script>
+                (() => {
+                  const nameInputEl = document.getElementById(
+                    'dynamic_tab_add_name',
+                  );
+                  const valueInputEl = document.getElementById(
+                    'dynamic_tab_add_value',
+                  );
+                  document
+                    .getElementById('add_tab')
+                    .addEventListener('click', () => {
+                      const tab = document.createElement('mm-tab-item');
+                      tab.textContent = nameInputEl.value;
+                      tab.value = valueInputEl.value;
+                      tabListEl.appendChild(tab);
+                    });
+                })();
+              </script>
+            </p>
+            <!-- Remove Tab -->
+            <p>
+              <label for="dynamic_tab_remove_index">Tab Index / value</label>
+              <input type="text" id="dynamic_tab_remove_index" />
+              <mm-button id="remove_tab_index">Remove (by index)</mm-button>
+              <mm-button id="remove_tab_value">Remove (by value)</mm-button>
+              <script>
+                (() => {
+                  const inputEl = document.getElementById(
+                    'dynamic_tab_remove_index',
+                  );
+                  document
+                    .getElementById('remove_tab_index')
+                    .addEventListener('click', () => {
+                      const index = parseInt(inputEl.value);
+                      tabListEl.children[index].remove();
+                    });
+                  document
+                    .getElementById('remove_tab_value')
+                    .addEventListener('click', () => {
+                      const value = inputEl.value;
+                      const tab = Array.from(tabListEl.children).find(
+                        (item) => item.value === value,
+                      );
+                      tab.remove();
+                    });
+                })();
+              </script>
+            </p>
+            <!-- Select Tab -->
+            <p>
+              <label for="dynamic_tab_select_index">Tab Index / value</label>
+              <input type="text" id="dynamic_tab_select_index" />
+              <mm-button id="select_tab_index">Select (by index)</mm-button>
+              <mm-button id="select_tab_value">Select (by value)</mm-button>
+              <script>
+                (() => {
+                  const inputEl = document.getElementById(
+                    'dynamic_tab_select_index',
+                  );
+                  document
+                    .getElementById('select_tab_index')
+                    .addEventListener('click', () => {
+                      const index = parseInt(inputEl.value);
+                      const item = tabListEl.children[index];
+                      item.selected = true;
+                    });
+                  document
+                    .getElementById('select_tab_value')
+                    .addEventListener('click', () => {
+                      const value = inputEl.value;
+                      tabListEl.value = value;
+                    });
+                })();
+              </script>
+            </p>
+          </div>
+        </section>
+      </main>
+    </mm-page>
+  </body>
+</html>

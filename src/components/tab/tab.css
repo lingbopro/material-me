@@ -1,0 +1,23 @@
+:host {
+  display: flex;
+  vertical-align: middle;
+  box-sizing: border-box;
+  position: relative;
+  background-color: rgb(var(--mm-color-surface));
+  overflow-x: auto;
+  scrollbar-width: 0;
+  min-height: 48px;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: all 0.12s;
+}
+:host::-webkit-scrollbar {
+  display: none;
+}
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: stretch;
+  position: relative;
+}
