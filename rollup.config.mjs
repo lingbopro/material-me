@@ -41,5 +41,6 @@ export default defineConfig({
       plugins: [terser()],
     },
   ],
+  treeshake: false,
   plugins: [...customImports, typescript(), babel()],
 });
