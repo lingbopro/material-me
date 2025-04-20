@@ -5,6 +5,7 @@ import { babel } from '@rollup/plugin-babel';
 import { customImport } from 'rollup-plugin-custom-import';
 import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
+import pkg from './package.json' with { type: 'json' };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,23 +25,35 @@ export const customImports = [
   }),
 ];
 
-export default defineConfig({
+export const mainConfig = defineConfig({
   input: './src/main.ts',
-  output: [
-    {
-      dir: './dist',
-      format: 'es',
-      sourcemap: true,
-      preserveModules: true,
-    },
-    {
-      file: './dist/material-me.min.js',
-      name: 'MaterialMe',
-      format: 'umd',
-      sourcemap: true,
-      plugins: [terser()],
-    },
-  ],
   treeshake: false,
   plugins: [...customImports, typescript(), babel()],
 });
+
+export default defineConfig([
+  {
+    output: [
+      {
+        dir: './dist',
+        format: 'es',
+        sourcemap: true,
+        preserveModules: true,
+      },
+    ],
+    ...mainConfig,
+    external: [...Object.keys(pkg.dependencies || {})],
+  },
+  {
+    output: [
+      {
+        file: './dist/material-me.min.js',
+        name: 'MaterialMe',
+        format: 'umd',
+        sourcemap: true,
+        plugins: [terser()],
+      },
+    ],
+    ...mainConfig,
+  },
+]);
