@@ -20,3 +20,17 @@ export function isSubDir(parent, dir) {
     relative && !relative.startsWith('..') && !path.isAbsolute(relative);
   return !!isSubdir;
 }
+
+let executedCleanupFns = [];
+export function useCleanup(cleanupFn) {
+  const callback = async () => {
+    if (executedCleanupFns.includes(cleanupFn)) {
+      return;
+    }
+    await cleanupFn();
+    executedCleanupFns.push(cleanupFn);
+  };
+  process.on('beforeExit', callback);
+  process.on('exit', callback);
+  process.on('SIGINT', callback);
+}

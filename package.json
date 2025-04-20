@@ -15,7 +15,7 @@
     "build": "rollup -c",
     "prepare": "git config set core.autocrlf false && git config set core.eol lf && husky",
     "script": "node dev/scripts/script.mjs",
-    "serve": "node dev/scripts/script.mjs server",
+    "serve": "node scripts/serve.mjs",
     "test": "web-test-runner",
     "test:coverage": "web-test-runner --coverage",
     "test:manual": "web-test-runner --manual",
