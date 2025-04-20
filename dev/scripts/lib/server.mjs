@@ -2,8 +2,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import http from 'http';
-import { debug, log, logError, logSuccess, isSubDir } from './utils.mjs';
-import { main as watch, cleanup as watchCleanup } from './watch.mjs';
+import { debug, log, logError, logSuccess } from './utils.mjs';
 import { MIMETypes } from './consts.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -84,7 +83,6 @@ export async function main(options) {
   server.listen(port);
   logSuccess(`server listening on port ${port}`);
   log('Starting watch...');
-  await watch(options);
 }
 export async function execute(options) {
   const startTime = new Date();
@@ -100,7 +98,6 @@ export async function execute(options) {
 export async function cleanup(options) {
   server.close();
   logSuccess('server stopped');
-  await watchCleanup(options);
 }
 
 export const docs = `

@@ -3,13 +3,9 @@
 'use strict';
 
 import { debug, log, logError, logSuccess } from './lib/utils.mjs';
-import * as buildScript from './lib/build.mjs';
-import * as watchScript from './lib/watch.mjs';
 import * as serverScript from './lib/server.mjs';
 
 const scripts = {
-  build: buildScript,
-  watch: watchScript,
   server: serverScript,
 };
 

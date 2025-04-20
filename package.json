@@ -12,8 +12,7 @@
     "./utils/*": "./dist/utils/*.js"
   },
   "scripts": {
-    "build": "node dev/scripts/script.mjs build",
-    "dev": "node dev/scripts/script.mjs server --no-min-bundle",
+    "build": "rollup -c",
     "prepare": "git config set core.autocrlf false && git config set core.eol lf && husky",
     "script": "node dev/scripts/script.mjs",
     "serve": "node dev/scripts/script.mjs server",
@@ -22,8 +21,7 @@
     "test:manual": "web-test-runner --manual",
     "test:watch": "web-test-runner --watch",
     "test:setup": "playwright install",
-    "watch": "node dev/scripts/script.mjs watch",
-    "watch:dev": "node dev/scripts/script.mjs watch --no-min-bundle"
+    "watch": "rollup -c -w"
   },
   "author": {
     "name": "lingbopro",
