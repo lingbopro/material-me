@@ -28,7 +28,13 @@ export const customImports = [
 export const mainConfig = defineConfig({
   input: './src/main.ts',
   treeshake: false,
-  plugins: [...customImports, typescript(), babel()],
+  plugins: [
+    ...customImports,
+    typescript(),
+    babel({
+      babelHelpers: 'bundled',
+    }),
+  ],
 });
 
 export default defineConfig([
@@ -55,5 +61,6 @@ export default defineConfig([
       },
     ],
     ...mainConfig,
+    plugins: [...mainConfig.plugins],
   },
 ]);
