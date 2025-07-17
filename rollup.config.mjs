@@ -21,9 +21,16 @@ export const customImports = [
   customImport({
     include: ['**/*.css'],
     content: (id, original) => {
-      return `export default ${JSON.stringify(original)};`;
+      return `import { css } from 'lit';
+export default css\`${original.replace(/`/g, '\\`')}\``;
     },
   }),
+  // customImport({
+  //   include: ['**/*.css'],
+  //   content: (id, original) => {
+  //     return `export default ${JSON.stringify(original)};`;
+  //   },
+  // }),
 ];
 
 export const mainConfig = defineConfig({
