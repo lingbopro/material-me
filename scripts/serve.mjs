@@ -13,7 +13,7 @@ import { MIMETypes } from './lib/consts.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const root = path.resolve(__dirname, '../..');
+const root = path.resolve(__dirname, '..');
 
 const port = process.env.PORT ?? 8514;
 /** @type {http.Server} */

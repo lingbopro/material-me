@@ -3,7 +3,12 @@ declare module '*.html' {
   export default content;
 }
 
+// declare module '*.css' {
+//   const content: string;
+//   export default content;
+// }
+
 declare module '*.css' {
-  const content: string;
+  const content: import('lit').CSSResult;
   export default content;
 }
